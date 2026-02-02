@@ -1,0 +1,8 @@
+set term wxt font "Helvetica,18"
+
+plot "gap_lin_1.00" u 1:2 t "delta=1" w l lw 2 lc 'blue'
+set title "HOMO-LUMO vs lenght of the chain"
+set xlabel "Number of carbons"
+set ylabel "Energy gap value"
+set key box lw 2
+set key right

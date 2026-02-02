@@ -54,9 +54,7 @@ program Huckel
   do
     write(*,'(1X,A)',advance='no') "ENTER THE DIMENSION OF THE POLYENE (N):  "
     read(*,*) d
-    if ( t .eq. 'C' .and. mod(d,2) .eq. 0) then ;
-            exit;
-    else if ( t .eq. 'L') then ;
+    if ( mod(d,2) .eq. 0) then ;
             exit;
     endif
 
@@ -110,6 +108,12 @@ program Huckel
   write(*,*)
   write(*,'(1X,A,F12.6)') "THE VALUE OF THE HOMO LUMO GAP IS: ", abs(eigen(n_el)-eigen(n_el+1))
   close(11) !Closing eigenvalue unit
+
+  write(filename, '(A,F4.2)') 'gap_lin_', abs(beta1/beta2)
+  open(unit=15, file=filename, status='unknown', access='append')
+  write(15,'(I4.4,F12.6)') d, abs(eigen(n_el)-eigen(n_el+1)) 
+  close(15)
+  write(*,'(1X,A,A)') "THE HOMO-LUMO GAP VALUE WAS APPEND IN THE FILE: ", filename
 
   ! The following procedure may be tricky. Each iteration a different value of uw is assigned (where uw is the writing unit). In
   ! addition the content of filename is updated according to the changing 'i'. Hence at the firs iteration filename is

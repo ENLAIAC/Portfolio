@@ -25,7 +25,7 @@ subroutine matrix_fill (H, d, t, beta1, beta2)
   !LOCAL VARIABLES
   logical :: bond_alt, atom_alt !bond_alt = set to true to design a polyene whose bonds lenght is alternated
                                 !atom_alt = set to true to designa polyene whose atoms are alternated
-  integer :: at1, at2         !at* = stores the atom type eventially atom_alt is set to true
+  double precision :: at1, at2         !at* = stores the atom type eventially atom_alt is set to true
   integer :: i,j !counters to run through the matrix (reading, writing, filling)                                             
 
   !OPUTPUT VARIABLES
@@ -74,29 +74,18 @@ subroutine matrix_fill (H, d, t, beta1, beta2)
   write(*,'(A)',advance='no') "   ATOM TYPE ALTERNATION: "
   read(*,*) atom_alt !Reading wheter the alternation is observed or not. If yes is stated by 'T', otherwise by 'F'
   write(*,*)
-  if ( atom_alt .eqv. .False. ) then;
-    write(*,'(A)') "----------------------------         ATOM TYPES         -------------------------------"
-    write(*,*)
-    write(*,'(A)') "          CARBON = 0           BORON = 1           NITROGEN = 2           OXYGEN = 3       "
-    write(*,*)
-    write(*,'(A)', advance='no') "   ENTER THE ATOM TYPE: "
-    read(*,*) at1 !Reading the atomic type
-    at2=at1 !Given the no alternation condition, at2 is set equal to at1
+  write(*,'(A)',advance='no') "   ENTER THE VALUE OF THE FIRST ALPHA: "
+  read(*,*) at1
+  if ( atom_alt .eqv. .True. ) then;
+    write(*,'(A)',advance='no') "   ENTER THE VALUES OF THE SECOND ALPHA: "
+    read(*,*) at2
   endif
-  if ( atom_alt .eqv. .TRUE. ) then;
-    write(*,'(A)') "----------------------------         ATOM TYPES         -------------------------------"
-    write(*,*)
-    write(*,'(A)') "          CARBON = 0           BORON = 1           NITROGEN = 2           OXYGEN = 3       "
-    write(*,*)
-    write(*,'(A)', advance='no') "   ENTER THE ATOM TYPE FOF BOTH ATOMS :  "
-    read(*,*) at1, at2 !Reading two different atom type, at1 and at2 are different in this case
-    if ( at1 .eq. at2 ) then;
+  if ( at1 .eq. at2 ) then;
       write(*,'(A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       write(*,'(A)') "!!!!!!!!!!!!!!!!             THE SAME ATOM TYPE WAS ENTERED               !!!!!!!!!!!!!!!"
       write(*,'(A)') "!!!!!!!!!!!!!!!!   the dymer has the same atomic center on each monomer   !!!!!!!!!!!!!!!"
       write(*,'(A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       write(*,*)
-    end if
   end if
   
 

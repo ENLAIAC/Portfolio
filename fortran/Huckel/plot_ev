@@ -1,0 +1,9 @@
+set term wxt font "Helvetica,18"
+
+plot "eigenvalues.txt" u 1:2 t "Eigenvalues" w p ps 0.5 pt 7 lc 'blue'
+set xrange [0:1]
+set title "Eigenvalues trend of the Huckel matrix"
+set xlabel "Quantum number"
+set ylabel "Energy"
+set key box lw 2
+set key left

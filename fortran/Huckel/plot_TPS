@@ -1,0 +1,8 @@
+set term wxt font "Helvetica,18"
+
+plot "TPS_lin_1.00" u 1:2 t "TPS delta=1" w l lw 2 lc 'blue'
+set title "TPS trend for different value of delta"
+set xlabel "Number of carbons"
+set ylabel "TPS value"
+set key box lw 2
+set key left

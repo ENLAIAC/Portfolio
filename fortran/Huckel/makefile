@@ -13,5 +13,5 @@ Huckel_mat: $(OBJ)
 	$(F90) $(FFLAGS) -c $<
 
 clean:
-	rm -f *.o Huckel_mat Deter
+	rm -f *.o Huckel_mat
 
