@@ -1,4 +1,4 @@
-!The next subroutin is designed to filll the Huckel Matrix. The idea of designing a routine to perform this action 
+!The next subroutin is designed/home/elia-linux/coding/Portfolio/fortran/Huckel to filll the Huckel Matrix. The idea of designing a routine to perform this action 
 !comes from the requirements of the program to match multiple conditions, i.e., to include dimerization, both in the
 !form of bond alternation and atomic centers alternation (or even the both of them)
 !Using a subroutine a overload of the memory is avoided because only the dimension of the matrix, the matrix itself and
@@ -17,7 +17,7 @@
 !TPF both runs over loops that uses d, hence eclaring d in the filling subroutin would not generate any global variable
 !able to be reused to control further step of the program, hence d and H have been declared as global variables
 
-subroutine matrix_fill (H, d, t)
+subroutine matrix_fill (H, d, t, beta1, beta2)
   !INPUT VARIABLES
   integer, intent(in) :: d                  ! d= the dimension of the matrix
   character, intent(in) :: t                !t = 'C' if the polyene is cyclic, 'L' if linear
@@ -26,12 +26,16 @@ subroutine matrix_fill (H, d, t)
   logical :: bond_alt, atom_alt !bond_alt = set to true to design a polyene whose bonds lenght is alternated
                                 !atom_alt = set to true to designa polyene whose atoms are alternated
   integer :: at1, at2         !at* = stores the atom type eventially atom_alt is set to true
-  double precision :: beta1=-1.0d0, beta2=-1.0d0 !beta* = bond lenghts. beta1 is already assigned, 
-                                                 !beta2 is assigned by the user when bond_alt is True
   integer :: i,j !counters to run through the matrix (reading, writing, filling)                                             
+
   !OPUTPUT VARIABLES
   double precision, intent(inout) :: H(d,d) !H(:,:) = the Huckel Matrix 
+  double precision, intent(out) :: beta1, beta2 !beta* = bond lenghts. beta1 is assigned and doesn't change its value 
+                                                !beta2 is assigned by the user when bond_alt is True
 
+  ! assignation of bond lenghts                                                 
+  beta1=-1.0d0
+  beta2=-1.0d0
 
   !Defining whether the polyene consist of a chain of dymer and which is the lenght of the second bond in the dymer 
   !unit. The following branch of code ask to the user whether or not the polyene has bond with different lenghts. 

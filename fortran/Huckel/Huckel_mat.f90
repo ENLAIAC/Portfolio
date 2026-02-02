@@ -8,9 +8,10 @@ program Huckel
   ! eigenvalues
   implicit none
   double precision, ALLOCATABLE :: H(:,:), eigen(:), occupation(:)
-  double precision :: beta, alpha, lambda, mu
+  double precision :: beta1, beta2, alpha, lambda, mu
   integer  :: i,j,k,d, uw, n_el
-  character(len=256) :: filename, t
+  character(len=4) :: t
+  character(len=256) :: filename, folder, fullpath
 
   write(*,*)
   write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -73,7 +74,7 @@ program Huckel
 
   ! 'Matrix_fill' ask to the user some additional features of the system like if dymers alternate bond lenght or the atomic center
   ! type and fills the Huckel's matrix accordingly. Look at 'subroutine.f90' for more details.
-  call matrix_fill(H, d, t)
+  call matrix_fill(H, d, t, beta1, beta2)
 
   !Open a file that is 'replaced' any time the program is run and stores the Huckel's matrix generated  by 'Matrix_fill'. The
   !writing unit is open in the main program, then the file is filled with a for running through the Huckel's matrix and the unit is
@@ -106,6 +107,7 @@ program Huckel
   n_el=d/2 ! given 'n_el' is an integer, diving by 2 a odd number floors the result to the lower number, for even number the ratio
            ! is exact
 
+  write(*,*)
   write(*,'(1X,A,F12.6)') "THE VALUE OF THE HOMO LUMO GAP IS: ", abs(eigen(n_el)-eigen(n_el+1))
   close(11) !Closing eigenvalue unit
 
@@ -115,58 +117,84 @@ program Huckel
   ! stored a column of the diagonalized matrix (i.e. a eigenvector), running over i shifts the column of reference by one each
   ! iteration.
 
+  write(*,*)
+  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  write(*,'(1X,A)') "!!!!!!!!                    WAIT: WRITING THE EIGENVECTORS...                        !!!!!"
+  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  write(*,*)
+  
+  write(folder,'(I0)') d
+  call execute_command_line("mkdir -p eigenvectors/"//trim(folder))
+
   do i = 1 , d
     uw=i*20 
     write(filename, '(A,I0)') 'eigenvector_',i
-    open(unit=uw, file=filename, status='unknown')
+    fullpath = "eigenvectors/"//trim(folder)//"/"//trim(filename)
+    open(unit=uw, file=fullpath, status='unknown')
     do j=1, d
       write(uw,'(F10.5)') H(j,i)
     end do
     close(uw)
   end do
 
- ! TPS Calculation
- ! The TPS here will be calculated using spatial orbitals (i.e., neglecting spin) and evetually exploitng occupation to keep track
- ! of the double counting. To keep trck of closed and open shell system simultaneously the number of electrons is computed as it
- ! folows. As a second step a occupation array is filled to keep track of doubly and singly occupied orbitals. For a even number of
- ! electrons, the orbitals obtained by the diagonalization (spatial orbitals) are doubly occupied, otherwise when d is odd the last
- ! orbital will be singly occupied (i.e., provides a single contribution to the TPS). 
- ! Three nested loops are used to run through the TPS calculation formula.
- ! According to the provided formula, (see the report), the computation of the TPS follows by multypling term-wise the coefficients
- ! of AO used to expand the MOs obtained by the diagonalizaion of the Huckel matrix. Here, some assumptions have been done as the
- ! orthonormalization of the basis functions (AO) and the diagonal form of the position operator matrix, as well as the fact that
- ! the position are not centered (the center of the chain on the zero).
- !
- n_el=(d+1)/2 ! The formula to compute the number of electron follows from the requirement of disrtinguishing between even and odd
-              ! number of electrons. The method holds on the assumption that any atom contribute with a single electron regardless
-              ! the atom type. Hence for a even number of centers the number of electrons is the exact half and the system consists
-              ! of a closed-shell system with d/2 doubly occupied orbitals. Given the integer kind of 'n_el' for a odd number of
-              ! electrons, dividing by two returns an incorrect value (e.g. n_el=3 for d=7). To avoid this wrong counting the '+1'
-              ! term is used. Doing so, for even number of electrons the division by two will still return the correct value as 
-              ! integer value rounded to the floor, while for an odd amount of electrons the 'n_el' increase by one. Indeed, with
-              ! an odd number of electrons the last spatial orbital is singly occupied, an occupation array keeps track of the
-              ! occupation of the spatial orbitals. 
- allocate(occupation(n_el))
- occupation(:)=2.00d0
+  fullpath = "eigenvectors/"//trim(folder)//"/"
+  write(*,'(1X,A,A)') "THE EIGENVECTORS HAVE BEEN COPIED IN THE FOLDER: ", trim(fullpath)
+  ! TPS Calculation
+  ! The TPS here will be calculated using spatial orbitals (i.e., neglecting spin) and evetually exploitng occupation to keep track
+  ! of the double counting. To keep trck of closed and open shell system simultaneously the number of electrons is computed as it
+  ! folows. As a second step a occupation array is filled to keep track of doubly and singly occupied orbitals. For a even number of
+  ! electrons, the orbitals obtained by the diagonalization (spatial orbitals) are doubly occupied, otherwise when d is odd the last
+  ! orbital will be singly occupied (i.e., provides a single contribution to the TPS). 
+  ! Three nested loops are used to run through the TPS calculation formula.
+  ! According to the provided formula, (see the report), the computation of the TPS follows by multypling term-wise the coefficients
+  ! of AO used to expand the MOs obtained by the diagonalizaion of the Huckel matrix. Here, some assumptions have been done as the
+  ! orthonormalization of the basis functions (AO) and the diagonal form of the position operator matrix, as well as the fact that
+  ! the position are not centered (the center of the chain on the zero).
+  !
+
+  n_el=(d+1)/2 ! The formula to compute the number of electron follows from the requirement of disrtinguishing between even and odd
+               ! number of electrons. The method holds on the assumption that any atom contribute with a single electron regardless
+               ! the atom type. Hence for a even number of centers the number of electrons is the exact half and the system consists
+               ! of a closed-shell system with d/2 doubly occupied orbitals. Given the integer kind of 'n_el' for a odd number of
+               ! electrons, dividing by two returns an incorrect value (e.g. n_el=3 for d=7). To avoid this wrong counting the '+1'
+               ! term is used. Doing so, for even number of electrons the division by two will still return the correct value as 
+               ! integer value rounded to the floor, while for an odd amount of electrons the 'n_el' increase by one. Indeed, with
+               ! an odd number of electrons the last spatial orbital is singly occupied, an occupation array keeps track of the
+               ! occupation of the spatial orbitals. 
  
- if ( mod(d,2) .ne. 0 ) then;
-        occupation(n_el)=1.0d0 
- end if
+              
+              
+              
+  allocate(occupation(n_el))
+  occupation(:)=2.00d0
+ 
+  if ( mod(d,2) .ne. 0 ) then;
+    occupation(n_el)=1.0d0 
+  end if
 
- lambda=0.0d0
- do i=1, n_el
-   do j=n_el+1, d
-     mu=0
-     do k=1, d
-       mu= mu + H(k,i)*H(k,j)*dble(k)
-     end do
-     mu=occupation(i)*(mu*mu)
-     lambda = lambda + mu
-   end do
- end do
+  lambda=0.0d0
+  do i=1, n_el
+    do j=n_el+1, d
+      mu=0
+      do k=1, d
+        mu= mu + H(k,i)*H(k,j)*dble(k)
+      end do
+      mu=occupation(i)*(mu*mu)
+      lambda = lambda + mu
+    end do
+  end do
+  
+  write(*,'(A)')
+  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!                 TPS PRINTING...                 !!!!!!!!!!!!!!!!!!!"
+  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+  write(*,'(A)')
 
- write(*,*) "Value of TPS: ", lambda
-
- deallocate(H,eigen,occupation) !deallocating the memory reserved to H and eigen to avoid memory leakage
+  write(filename, '(A,F4.2)') 'TPS_lin_', abs(beta1/beta2)
+  open(unit=15, file=filename, status='unknown', access='append')
+  write(15,'(I4.4,F12.6)') d, lambda/dble(d) 
+  close(15)
+  write(*,'(1X,A,A)') "THE TPS VALUE WAS APPEND IN THE FILE: ", filename
+  deallocate(H,eigen,occupation) !deallocating the memory reserved to H and eigen to avoid memory leakage
 end program Huckel
 
