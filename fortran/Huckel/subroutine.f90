@@ -17,7 +17,9 @@
 !TPF both runs over loops that uses d, hence eclaring d in the filling subroutin would not generate any global variable
 !able to be reused to control further step of the program, hence d and H have been declared as global variables
 
-subroutine matrix_fill (H, d, t, beta1, beta2)
+subroutine matrix_fill (H, d, t, beta1, beta2,at1,at2)
+  implicit none
+
   !INPUT VARIABLES
   integer, intent(in) :: d                  ! d= the dimension of the matrix
   character, intent(in) :: t                !t = 'C' if the polyene is cyclic, 'L' if linear
@@ -25,13 +27,13 @@ subroutine matrix_fill (H, d, t, beta1, beta2)
   !LOCAL VARIABLES
   logical :: bond_alt, atom_alt !bond_alt = set to true to design a polyene whose bonds lenght is alternated
                                 !atom_alt = set to true to designa polyene whose atoms are alternated
-  double precision :: at1, at2         !at* = stores the atom type eventially atom_alt is set to true
   integer :: i,j !counters to run through the matrix (reading, writing, filling)                                             
 
   !OPUTPUT VARIABLES
   double precision, intent(inout) :: H(d,d) !H(:,:) = the Huckel Matrix 
   double precision, intent(out) :: beta1, beta2 !beta* = bond lenghts. beta1 is assigned and doesn't change its value 
                                                 !beta2 is assigned by the user when bond_alt is True
+  double precision, intent(out) :: at1, at2         !at* = stores the atom type eventially atom_alt is set to true
 
   ! assignation of bond lenghts                                                 
   beta1=-1.0d0
@@ -76,13 +78,14 @@ subroutine matrix_fill (H, d, t, beta1, beta2)
   write(*,*)
   write(*,'(A)',advance='no') "   ENTER THE VALUE OF THE FIRST ALPHA: "
   read(*,*) at1
+  at2=at1
   if ( atom_alt .eqv. .True. ) then;
     write(*,'(A)',advance='no') "   ENTER THE VALUES OF THE SECOND ALPHA: "
     read(*,*) at2
   endif
   if ( at1 .eq. at2 ) then;
       write(*,'(A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-      write(*,'(A)') "!!!!!!!!!!!!!!!!             THE SAME ATOM TYPE WAS ENTERED               !!!!!!!!!!!!!!!"
+      write(*,'(A)') "!!!!!!!!!!!!!!!!              THE SAME ATOM TYPE WAS USED                 !!!!!!!!!!!!!!!"
       write(*,'(A)') "!!!!!!!!!!!!!!!!   the dymer has the same atomic center on each monomer   !!!!!!!!!!!!!!!"
       write(*,'(A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       write(*,*)
