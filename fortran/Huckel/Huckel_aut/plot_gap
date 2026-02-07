@@ -1,0 +1,12 @@
+set term wxt font "Helvetica,18"
+
+plot "gap_lin_0.00_0.00_1.00" u 1:2 t "delta=1.00" w l lw 2 lc 'blue', \
+     "gap_lin_0.99" u 1:2 t "delta=0.99" w l lw 2 lc 'red', \
+     "gap_lin_0.80" u 1:2 t "delta=0.80" w l lw 2 lc 'green', \
+     "gap_lin_0.50" u 1:2 t "delta=0.50" w l lw 2 lc 'pink', \
+     "gap_lin_0.33" u 1:2 t "delta=0.33" w l lw 2 lc 'brown'
+set title "HOMO-LUMO gap vs length of the chain. Alpha=0.0 - Carbon atom only"
+set xlabel "Number of carbons"
+set ylabel "HOMO-LUMO gap"
+set key box lw 2
+set key right
