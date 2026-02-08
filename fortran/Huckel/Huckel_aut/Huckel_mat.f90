@@ -49,7 +49,7 @@ program Huckel
   !  write(*,*)
   !end do
 
-  t='C'
+  t='L'
 
 
   ! Definition of the size of the polyene chain. For a cyclic chain the number of atoms must be even, the next branch of
@@ -145,7 +145,7 @@ program Huckel
   end do
   
   write(*,*)
-  write(filename, '(A,F4.2)') 'TPS_lin_', abs(beta1/beta2)
+  write(filename, '(A,F4.2)') 'TPS_lin_', at2
   open(unit=16, file=filename, status='unknown', access='append')
   write(16,'(I4.4,F12.6)') d, lambda/dble(d) 
   close(16)
