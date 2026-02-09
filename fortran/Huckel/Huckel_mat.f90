@@ -1,19 +1,13 @@
 program Huckel
   ! INITIALIZIATION OF THE VARIABLES
-  ! HL = Huckel matrix for linear polyenes; HC = Huckel matrix for cyclic polyenes, eigen = vector storing the
-  ! eigenvectors; delta(:) = stores the differences in energy between successive eigenvalues in order to find the HOMO-LUMO gap
-  ! beta = value of the beta distance; alpha = value of diagonal term; lambda = [...], mu = [...]
-  ! i,j,k = counters to run through loops, d = lenght of the polyene, uw = unit to control the printing of
-  ! eigenvectors; n_el = [...used later for TPS...]; filename = stores the name of the file that will host the
-  ! eigenvalues
   implicit none
-  double precision, ALLOCATABLE :: H(:,:), eigen(:), occupation(:)
+  double precision, ALLOCATABLE :: H(:,:), eigen(:)
   double precision :: beta1, beta2, lambda, mu, at1, at2
   integer  :: i,j,k,d, uw, n_el
   character(len=4) :: t
-  character(len=256) :: filename, folder, fullpath, typ
-  double precision, parameter :: thresh=0.95
+  character(len=256) :: filename
 
+  ! GRAPHICAL INTERFACE
   write(*,*)
   write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -33,9 +27,6 @@ program Huckel
   write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   write(*,'(A)')
 
-  ! Definition of the type of polyene by user with input error handling: if the user enters an unexpected entry
-  ! the program doesn't stop the program, but arise an explicit error and keeps asking for a correct input
-
   do
     write(*,'(1X,A)',advance='no') "ENTER THE TYPE OF POLYENE:  'L' = LINEAR   |   'C' = CYCLIC  ->  "
     read(*,*) t
@@ -49,9 +40,6 @@ program Huckel
     write(*,*)
   end do
 
-  ! Definition of the size of the polyene chain. For a cyclic chain the number of atoms must be even, the next branch of
-  ! of code handles any odd entry for cyclic chains. The program keeps asking for a correct length until the users entry
-  ! satisfy the even number condition
   do
     write(*,'(1X,A)',advance='no') "ENTER THE DIMENSION OF THE POLYENE (N):  "
     read(*,*) d
@@ -87,6 +75,8 @@ program Huckel
 
   call diagonalize_matrix(d, H, eigen)
 
+  ! HOMO-LUMO GAP CALCULATION
+
   call HL_gap(t,abs(beta1/beta2),d,eigen,at1,at2)
 
   ! EIGENVALUES AND EIGENFUNCTIONS PRINTINGS
@@ -94,18 +84,7 @@ program Huckel
   call save_res(H,eigen,d,t,abs(beta1/beta2),at1,at2)
 
   ! TPS Calculation
-  ! The TPS here will be calculated using spatial orbitals (i.e., neglecting spin) and evetually exploitng occupation to keep track
-  ! of the double counting. To keep trck of closed and open shell system simultaneously the number of electrons is computed as it
-  ! folows. As a second step a occupation array is filled to keep track of doubly and singly occupied orbitals. For a even number of
-  ! electrons, the orbitals obtained by the diagonalization (spatial orbitals) are doubly occupied, otherwise when d is odd the last
-  ! orbital will be singly occupied (i.e., provides a single contribution to the TPS). 
-  ! Three nested loops are used to run through the TPS calculation formula.
-  ! According to the provided formula, (see the report), the computation of the TPS follows by multypling term-wise the coefficients
-  ! of AO used to expand the MOs obtained by the diagonalizaion of the Huckel matrix. Here, some assumptions have been done as the
-  ! orthonormalization of the basis functions (AO) and the diagonal form of the position operator matrix, as well as the fact that
-  ! the position are not centered (the center of the chain on the zero).
-  !
-
+  
   if ( t .eq. 'C' ) then ;
     write(*,*)
     write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
@@ -149,6 +128,6 @@ program Huckel
   write(*,'(1X,A,F12.6)') "   THE TPS VALUE IS: ", lambda/dble(d)
   write(*,*)
   write(*,'(1X,A,A)') "    THE TPS VALUE WAS APPEND IN THE FILE: ", filename
-  deallocate(H,eigen) !deallocating the memory reserved to H and eigen to avoid memory leakage
+  deallocate(H,eigen) 
 end program Huckel
 
