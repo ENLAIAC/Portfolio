@@ -14,7 +14,6 @@ subroutine HL_gap(t, ratio, d, eigen,at1,at2)
   character (len=8) :: typ1, typ2
   
   n_el=d/2
-  write(*,*) "d: ", d
   write(typ1,'(F8.3)') at1
   typ1=adjustl(typ1)
   write(typ2,'(F8.3)') at2

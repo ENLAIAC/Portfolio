@@ -1,0 +1,9 @@
+set term wxt font "Helvetica,18"
+
+plot "lin_1000_0.00_alpha_1.00_gap_vs_ratio" u 1:2 t "linear" w l lw 5 lc 'red', \
+     "cyc_1000_0.00_alpha_1.00_gap_vs_ratio" u 1:2 t "cyclic" w l lw 2.5 lc 'blue'
+set title "HOMO-LUMO gap vs atom alternation (alpha) - N = 1000"
+set xlabel "alpha"
+set ylabel "HOMO-LUMO gap"
+set key box lw 2
+set key right

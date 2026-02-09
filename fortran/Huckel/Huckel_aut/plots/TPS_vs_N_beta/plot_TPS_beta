@@ -1,0 +1,15 @@
+set term wxt font "Helvetica,18"
+
+plot "TPS_lin_1.00_0.00" u 1:2 t "delta=1.00" w l lw 2 lc 'blue', \
+     "TPS_lin_0.99_0.00" u 1:2 t "delta=0.99" w l lw 2 lc 'red', \
+     "TPS_lin_0.80_0.00" u 1:2 t "delta=0.80" w l lw 2 lc 'green', \
+     "TPS_lin_0.50_0.00" u 1:2 t "delta=0.50" w l lw 2 lc 'pink', \
+     "TPS_lin_0.33_0.00" u 1:2 t "delta=0.33" w l lw 2 lc 'brown', \
+     "TPS_lin_0.20_0.00" u 1:2 t "delta=0.20" w l lw 2 lc 'yellow', \
+     "TPS_lin_0.10_0.00" u 1:2 t "delta=0.10" w l lw 2 lc 'violet', \
+     "TPS_lin_0.01_0.00" u 1:2 t "delta=0.01" w l lw 2 lc 'orange'
+set title "Total-position spread tensor vs length of the chain."
+set xlabel "Number of carbons"
+set ylabel "TPS value"
+set key box lw 2
+set key left

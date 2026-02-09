@@ -87,13 +87,6 @@ program Huckel
 
   call diagonalize_matrix(d, H, eigen)
 
-  open (unit=11, file='eigenvalues.txt', status='unknown')
-
-  do i = 1, d
-    write(11,*) (i-1)/dble(d-1), eigen(i) !writing
-  end do
-  close(11) 
-
   call HL_gap(t,abs(beta1/beta2),d,eigen,at1,at2)
 
   ! EIGENVALUES AND EIGENFUNCTIONS PRINTINGS
