@@ -29,46 +29,11 @@ program Huckel
   write(*,'(1X,A)') "                                         by CAZZANTI ELIA                                     "
   write(*,'(A)')
   write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!           BUILDING OF THE HUCKEL MATRIX           !!!!!!!!!!!!!!!!!!!"
+  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!           BUILDING THE HUCKEL MATRIX            !!!!!!!!!!!!!!!!!!!"
   write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   write(*,'(A)')
 
-  ! Definition of the type of polyene by user with input error handling: if the user enters an unexpected entry
-  ! the program doesn't stop the program, but arise an explicit error and keeps asking for a correct input
-
-  !do
-  !  write(*,'(1X,A)',advance='no') "ENTER THE TYPE OF POLYENE:  'L' = LINEAR   |   'C' = CYCLIC  ->  "
-  !  read(*,*) t
-  !  if ( t .eq. 'C' .or. t .eq. 'L') then;
-  !     exit
-  !  endif
-  !  write(*,*)
-  !  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  !  write(*,'(1X,A)') "!!!!!!!!!!!!!!!               INPUT ERROR: PLEASE PROVIDE A CORRECT INPUT              !!!!!"
-  !  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  !  write(*,*)
-  !end do
-
   t='C'
-
-
-  ! Definition of the size of the polyene chain. For a cyclic chain the number of atoms must be even, the next branch of
-  ! of code handles any odd entry for cyclic chains. The program keeps asking for a correct length until the users entry
-  ! satisfy the even number condition
-  !do
-  !  write(*,'(1X,A)',advance='no') "ENTER THE DIMENSION OF THE POLYENE (N):  "
-  !  read(*,*) d
-  !  if ( mod(d,2) .eq. 0) then ;
-  !          exit;
-  !  endif
-  !  write(*,*)
-  !  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  !  write(*,'(1X,A)') "!!!!!!!!                 SIZE ERROR: PLEASE PROVIDE A CORRECT INPUT                   !!!!!"
-  !  write(*,'(1X,A)') "!!!!!!!!        NOTE: FOR A CYCLIC POLYENE THE DIMENSION MUST BE EVEN                 !!!!!"
-  !  write(*,'(1X,A)') "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-  !  write(*,*)
-  !end do
-
   d=n
 
   ! MEMORY ALLOCATION
@@ -78,7 +43,7 @@ program Huckel
   ! MATRIX FILLING
   
   call matrix_fill(H, d, t, beta1, beta2, at1, at2)
-
+  
   open(unit=10, file="Huckel_matrix.txt", status='replace')
   do i=1, d
     write(10,*) (H(i,j), j=1, d)
@@ -95,19 +60,6 @@ program Huckel
   ! EIGENVALUES AND EIGENFUNCTIONS PRINTINGS
 
   call save_res(H,eigen,d,t,abs(beta1/beta2),at1,at2)
-
-  ! TPS Calculation
-  ! The TPS here will be calculated using spatial orbitals (i.e., neglecting spin) and evetually exploitng occupation to keep track
-  ! of the double counting. To keep trck of closed and open shell system simultaneously the number of electrons is computed as it
-  ! folows. As a second step a occupation array is filled to keep track of doubly and singly occupied orbitals. For a even number of
-  ! electrons, the orbitals obtained by the diagonalization (spatial orbitals) are doubly occupied, otherwise when d is odd the last
-  ! orbital will be singly occupied (i.e., provides a single contribution to the TPS). 
-  ! Three nested loops are used to run through the TPS calculation formula.
-  ! According to the provided formula, (see the report), the computation of the TPS follows by multypling term-wise the coefficients
-  ! of AO used to expand the MOs obtained by the diagonalizaion of the Huckel matrix. Here, some assumptions have been done as the
-  ! orthonormalization of the basis functions (AO) and the diagonal form of the position operator matrix, as well as the fact that
-  ! the position are not centered (the center of the chain on the zero).
-  !
 
   if ( t .eq. 'C' ) then ;
     write(*,*)
