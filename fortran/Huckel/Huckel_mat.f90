@@ -113,7 +113,7 @@ program Huckel
   end do
   
   write(*,*)
-  write(filename, '(A,F4.2)') 'TPS_lin_', abs(beta1/beta2)
+  write(filename, '(A,F4.2,A,F4.2)') 'TPS_lin_', abs(beta1/beta2), "_", abs(at2)
   open(unit=16, file=filename, status='unknown', access='append')
   write(16,'(I4.4,F12.6)') d, lambda/dble(d) 
   close(16)
