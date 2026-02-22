@@ -3,7 +3,7 @@ program Huckel
   implicit none
   double precision, ALLOCATABLE :: H(:,:), eigen(:)
   double precision :: beta1, beta2, lambda, mu, at1, at2
-  integer  :: i,j,k,d, uw, n_el
+  integer  :: i,j,k,d, uw, n_coup
   character(len=4) :: t
   character(len=256) :: filename
 
@@ -100,10 +100,10 @@ program Huckel
   write(*,'(A)')
   
 
-  n_el=d/2
+  n_coup=d/2   !N
   lambda=0.0d0
-  do i=1, n_el
-    do j=n_el+1, d
+  do i=1, n_coup
+    do j=n_coup+1, d
       mu=0
       do k=1, d
         mu= mu + H(k,i)*H(k,j)*dble(k)

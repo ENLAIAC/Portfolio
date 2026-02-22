@@ -36,7 +36,7 @@ subroutine matrix_fill (H, d, t, beta1, beta2,at1,at2)
   double precision, intent(out) :: at1, at2         !at* = stores the atom type eventially atom_alt is set to true
 
   ! assignation of bond lenghts                                                 
-  beta1=-1.0d0
+  beta1=-2.0d0
   beta2=-1.0d0
 
 
