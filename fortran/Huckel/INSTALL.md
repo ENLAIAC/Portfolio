@@ -125,9 +125,4 @@ The code calls `execute_command_line('mkdir -p ...')`. If you run on a restricte
 - you have permission to create directories in the working directory,
 - `execute_command_line` is supported by your compiler (gfortran supports it).
 
-## 8. Reproducibility recommendation (optional)
-For scan campaigns, keep:
-- a copy of the exact executable used,
-- a run log listing parameter grids,
-- a single consolidated `summary.tsv` (if you later add it) to simplify plotting.
 
