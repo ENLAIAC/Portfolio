@@ -1,6 +1,6 @@
 # Installation and Usage — Hückel Polyene Fortran Program
 
-## 0. Extract the tarball (on the destination machine)
+## 0. Extract the tarball
 
 From the directory where `Huckel_HMO.tar.gz` is located in your linux environment:
 ```bash
