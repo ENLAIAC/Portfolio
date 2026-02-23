@@ -1,26 +1,8 @@
 # Installation and Usage — Hückel Polyene Fortran Program
 
-## 0. Obtain the code as a tarball (pack/unpack)
+## 0. Extract the tarball (on the destination machine)
 
-If you need to send the program as a single file, you can create a compressed tar archive (`.tar.gz`) and unpack it elsewhere.
-
-### Create the tarball (on the source machine)
-
-From the directory that **contains** the project folder (replace `Huckel/` with your actual folder name):
-```bash
-tar -czvf Huckel_HMO.tar.gz Huckel/
-```
-
-(Optional) List archive contents:
-```bash
-tar -tzf Huckel_HMO.tar.gz | less
-```
-
-You can then transfer the archive (e.g., via `scp`, USB, cloud storage).
-
-### Extract the tarball (on the destination machine)
-
-From the directory where `Huckel_HMO.tar.gz` is located:
+From the directory where `Huckel_HMO.tar.gz` is located in your linux environment:
 ```bash
 tar -xzvf Huckel_HMO.tar.gz
 cd Huckel
@@ -41,7 +23,7 @@ This document explains how to compile and run the **Hückel/tight-binding polyen
 
 > Note: on some systems LAPACK may require BLAS as well (often pulled automatically by the package manager). If you see linker errors about BLAS symbols, link with `-lblas` or use a combined implementation like OpenBLAS.
 
-## 2. Install dependencies
+## 2. Install dependencies (skip if LLAPACK is already installed)
 
 ### Ubuntu / Debian
 ```bash
@@ -102,17 +84,8 @@ The program will prompt for:
 - bond alternation flag (if enabled, you provide a second coupling)
 - site alternation flag (if enabled, you provide two on-site energies)
 
-## 5. Run (non-interactive / batch)
 
-You can feed inputs via stdin. Example (values are illustrative; follow the prompt order shown by the program):
-
-```bash
-printf "L\n100\nF\nF\n0.0\n" | ./Huckel_mat
-```
-
-For parameter scans, it is recommended to drive the executable from a shell/Python script and collect outputs.
-
-## 6. Outputs (what files to expect)
+## 5. Outputs (what files to expect)
 
 The program writes a mix of “single-run” files and “scan-friendly” appended datasets.
 
@@ -153,9 +126,3 @@ Your LAPACK is not in the default library search path. Install `liblapack-dev` (
 The code calls `execute_command_line('mkdir -p ...')`. If you run on a restricted environment, ensure:
 - you have permission to create directories in the working directory,
 - `execute_command_line` is supported by your compiler (gfortran supports it).
-
-## 8. Reproducibility recommendation (optional)
-For scan campaigns, keep:
-- a copy of the exact executable used,
-- a run log listing parameter grids,
-- a single consolidated `summary.tsv` (if you later add it) to simplify plotting.
